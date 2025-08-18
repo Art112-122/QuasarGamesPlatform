@@ -1,13 +1,68 @@
 <template>
-  <q-page class="flex flex-center">
-    <img
-      alt="Quasar logo"
-      src="~assets/quasar-logo-vertical.svg"
-      style="width: 200px; height: 200px"
+  <q-input v-model="search" debounce="300" placeholder="Поиск..." filled clearable class="">
+    <template v-slot:append>
+      <q-icon name="search" />
+    </template>
+  </q-input>
+  <q-page class="q-pa-md row">
+    <q-card
+      class="col-lg-2 col-md-2 col-sm-3 col-5"
+      style="margin-left: 1rem; margin-right: 1rem; margin-bottom: 2rem"
+      v-for="[name, page] in filteredPages"
+      :key="name"
     >
+      <q-img :src="`/cardimages/${page['imagePath']}`">
+        <div class="absolute-bottom">
+          <router-link :to="`/${page['pathname']}`" class="text-h6 link">{{ name }}</router-link>
+        </div>
+      </q-img>
+
+      <q-card-actions class="q-gutter-md">
+        <q-btn
+          v-for="([category, link], idx) in Object.entries(page['categories'])"
+          :key="idx"
+          :to="`/${link}`"
+          flat
+          color="primary"
+          size="md"
+          class="text-capitalize"
+        >
+          {{ category }}
+        </q-btn>
+      </q-card-actions>
+    </q-card>
   </q-page>
 </template>
 
 <script setup>
-//
+import { ref, computed } from 'vue'
+import configuration from '../../config.json'
+
+const json = configuration[0]
+const search = ref('')
+
+const filteredPages = computed(() => {
+  const pages = json.pages || {}
+  return Object.entries(pages).filter(([item, value]) => {
+    const searchText = search.value.toLowerCase()
+    return (
+      item.toLowerCase().includes(searchText) ||
+      (value.pathname && value.pathname.toLowerCase().includes(searchText))
+    )
+  })
+})
 </script>
+
+<style scoped>
+.link {
+  font-size: 0.98rem;
+  text-decoration: none;
+  color: white;
+}
+
+.my-card:hover {
+  transform: scale(1.05);
+  transition-duration: 0.1s;
+}
+
+</style>

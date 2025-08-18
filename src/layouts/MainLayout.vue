@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar>
+    <q-header>
+      <q-toolbar style="background-image: linear-gradient(#25193e, #06083A)">
         <q-btn
           flat
           dense

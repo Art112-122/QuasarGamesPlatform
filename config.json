@@ -1,0 +1,162 @@
+[
+  {
+    "pages": {
+      "Counter Strike 2": {
+        "pathName": "CounterStrike2",
+        "imagePath": "cs2.jpg",
+        "categories":
+          {
+            "Аккаунты": "accounts"
+          }
+
+      },
+      "C2": {
+        "pathName": "CounterStrike2",
+        "imagePath": "cs2.jpg",
+        "categories":
+        {
+          "Аккаунты": "accounts"
+        }
+
+      },
+      "C3": {
+        "pathName": "CounterStrike2",
+        "imagePath": "cs2.jpg",
+        "categories":
+        {
+          "Аккаунты": "accounts"
+        }
+
+      },
+      "C4": {
+        "pathName": "CounterStrike2",
+        "imagePath": "cs2.jpg",
+        "categories":
+        {
+          "Аккаунты": "accounts"
+        }
+
+      },
+      "C5": {
+        "pathName": "CounterStrike2",
+        "imagePath": "cs2.jpg",
+        "categories":
+        {
+          "Аккаунты": "accounts"
+        }
+
+      },
+      "C9": {
+        "pathName": "CounterStrike2",
+        "imagePath": "cs2.jpg",
+        "categories":
+        {
+          "Аккаунты": "accounts"
+        }
+
+      },
+      "C7": {
+        "pathName": "CounterStrike2",
+        "imagePath": "cs2.jpg",
+        "categories":
+        {
+          "Аккаунты": "accounts"
+        }
+
+      },
+      "C": {
+        "pathName": "CounterStrike2",
+        "imagePath": "cs2.jpg",
+        "categories":
+        {
+          "Аккаунты": "accounts"
+        }
+
+      },
+      "2C": {
+        "pathName": "CounterStrike2",
+        "imagePath": "cs2.jpg",
+        "categories":
+        {
+          "Аккаунты": "accounts"
+        }
+
+      },"3C": {
+        "pathName": "CounterStrike2",
+        "imagePath": "cs2.jpg",
+        "categories":
+        {
+          "Аккаунты": "accounts"
+        }
+
+      },"4C": {
+        "pathName": "CounterStrike2",
+        "imagePath": "cs2.jpg",
+        "categories":
+        {
+          "Аккаунты": "accounts"
+        }
+
+      },"5C": {
+        "pathName": "CounterStrike2",
+        "imagePath": "cs2.jpg",
+        "categories":
+        {
+          "Аккаунты": "accounts"
+        }
+
+      },"C6": {
+        "pathName": "CounterStrike2",
+        "imagePath": "cs2.jpg",
+        "categories":
+        {
+          "Аккаунты": "accounts"
+        }
+
+      },"7C": {
+        "pathName": "CounterStrike2",
+        "imagePath": "cs2.jpg",
+        "categories":
+        {
+          "Аккаунты": "accounts"
+        }
+
+      },"8C": {
+        "pathName": "CounterStrike2",
+        "imagePath": "cs2.jpg",
+        "categories":
+        {
+          "Аккаунты": "accounts"
+        }
+
+      },"9C": {
+        "pathName": "CounterStrike2",
+        "imagePath": "cs2.jpg",
+        "categories":
+        {
+          "Аккаунты": "accounts"
+        }
+
+      },
+
+      "": {
+        "pathName": "CounterStrike2",
+        "imagePath": "cs2.jpg",
+        "categories":
+          {
+            "Аккаунты": "accounts"
+          }
+
+      },
+      "Counter Strike 4": {
+        "pathName": "CounterStrike2",
+        "imagePath": "cs2.jpg",
+        "categories":
+          {
+            "Аккаунты": "accounts"
+          }
+
+      }
+    }
+  }
+]
