@@ -73,9 +73,5 @@ const filteredPages = computed(() => {
   transition: 0.3s;
 }
 
-.my-card:hover {
-  transform: scale(1.05);
-  transition-duration: 0.1s;
-}
 
 </style>
