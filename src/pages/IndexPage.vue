@@ -6,7 +6,7 @@
   </q-input>
   <q-page class="q-pa-md row">
     <q-card
-      class="col-lg-2 col-md-2 col-sm-3 col-5"
+      class="col-lg-2 col-md-2 col-sm-3 col-5 soso-pikmi-misha"
       style="margin-left: 1rem; margin-right: 1rem; margin-bottom: 2rem"
       v-for="[name, page] in filteredPages"
       :key="name"
@@ -25,7 +25,7 @@
           flat
           color="primary"
           size="md"
-          class="text-capitalize"
+          class="text-capitalize sergey-5cm-penis"
         >
           {{ category }}
         </q-btn>
@@ -35,8 +35,9 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import configuration from '../../config.json'
+import {api} from 'boot/axios.js'
 
 const json = configuration[0]
 const search = ref('')
@@ -51,18 +52,34 @@ const filteredPages = computed(() => {
     )
   })
 })
+
+
+onMounted(() => {
+  api.get('/test')
+  .then(response => {console.log(response.data)})
+  api.post('/test', {test: "test_string"}).then(response => {console.log(response.data)})
+})
+
 </script>
 
 <style scoped>
 .link {
-  font-size: 0.98rem;
+  font-size: 1.00rem;
   text-decoration: none;
   color: white;
 }
 
-.my-card:hover {
-  transform: scale(1.05);
-  transition-duration: 0.1s;
+.sergey-5cm-penis {
+  font-size: 1.00rem;
+  border: 2px solid #272525;
+  box-shadow: 2px 2px 3px #272525;
+  border-radius: 10px;
+}
+
+.soso-pikmi-misha:hover {
+  box-shadow: #1D1D1D 2px 2px 2px;
+  transform: scale(1.07);
+  transition: 0.3s;
 }
 
 </style>
