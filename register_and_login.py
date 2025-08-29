@@ -1,9 +1,10 @@
-import status
+
 import uvicorn
 from fastapi import FastAPI, Depends, HTTPException, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from database import SessionLocal, init_db
 from models import User
@@ -17,6 +18,15 @@ import bcrypt
 
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:9000",'http://localhost:8000'],  # або конкретно ["http://localhost:9000"]
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 init_db()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -60,17 +70,21 @@ def register(user: UserRegisterRequest, db: Session = Depends(get_db)):
     new_user = User(email=user.email, hashed_password=hash_password(user.password))
     db.add(new_user)
     db.commit()
-    return JSONResponse(content={"message": "Пользователь успешно зарегистрирован"})
+    token = create_jwt({"sub": user.email})
+    response = JSONResponse(
+        content={"access_token": token, "token_type": "bearer"}
+    )
+    response.set_cookie(key="access_token", value=token, httponly=True)
+    return response
 
 
-
-@app.post("/token", response_model=UserLoginResponse)
+@app.post("/login", response_model=UserLoginResponse)
 def login(
-    form_data: OAuth2PasswordRequestForm = Depends(),
+    data: UserLoginRequest,
     db: Session = Depends(get_db),
 ):
-    user = db.query(User).filter(User.email == form_data.username).first()
-    if not user or not verify_password(form_data.password, user.hashed_password):
+    user = db.query(User).filter(User.email == data.username).first()
+    if not user or not verify_password(data.password, user.hashed_password):
         return JSONResponse(
             status_code=400,
             content={"error": "Неверный email или пароль"}
@@ -104,4 +118,4 @@ def get_me(token: str = Depends(get_token_from_cookie), db: Session = Depends(ge
 
 
 if __name__ == "__main__":
-    uvicorn.run("register_and_login:app", port=8004, reload=True)
+    uvicorn.run("register_and_login:app", port=8000, reload=True)
