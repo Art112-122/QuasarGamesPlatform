@@ -252,4 +252,5 @@ def send_verification_email(to_email: str, code: str):
 
 
 if __name__ == "__main__":
+
     uvicorn.run("register_and_login:app", port=8000, reload=True)
