@@ -60,17 +60,9 @@ const filteredPages = computed(() => {
   color: white;
 }
 
-.sergey-5cm-penis {
-  font-size: 1.00rem;
-  border: 2px solid #272525;
-  box-shadow: 2px 2px 3px #272525;
-  border-radius: 10px;
-}
-
 .soso-pikmi-misha:hover {
-  box-shadow: #1D1D1D 2px 2px 2px;
   transform: scale(1.07);
-  transition: 0.3s;
+  transition-duration: 0.3s;
 }
 
 

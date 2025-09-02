@@ -61,14 +61,6 @@ const filtered = Object.entries(json)
   color: white;
 }
 
-.my-card {
-  max-height: 30rem !important;
-}
-
-.image-back {
-  align-items: center;
-}
-
 h1 {
   font-family: 'Roboto Mono', monospace;
 }

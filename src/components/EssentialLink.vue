@@ -2,7 +2,7 @@
   <q-item
     clickable
     tag="a"
-    target="_blank"
+    :target="props.essential ? '_blank': ''"
     :href="props.link"
   >
     <q-item-section
@@ -39,6 +39,11 @@ const props = defineProps({
   icon: {
     type: String,
     default: ''
+  },
+
+  essential: {
+    type: Boolean,
+    default: false
   }
 })
 </script>

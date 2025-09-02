@@ -8,4 +8,8 @@ function setCookie(key, value) {
   cookies.set(key, value);
 }
 
-export { getCookie, setCookie };
+function getToken() {
+  return cookies.get('token');
+}
+
+export { getCookie, setCookie, getToken };
