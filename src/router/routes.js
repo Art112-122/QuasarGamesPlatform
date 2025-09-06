@@ -2,7 +2,7 @@ const routes = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
-    children: [{path: "", component: () => import("pages/MainPage.vue")},{ path: '/games', component: () => import('pages/IndexPage.vue') }]
+    children: [{path: "", component: () => import("pages/MainPage.vue")},{ path: '/games', component: () => import('pages/IndexPage.vue') }, { path: '/games/:game', component: () => import('pages/CategoryPage.vue') }, { path: '/games/:game/:category', component: () => import('pages/CategoryPage.vue') }]
   },
 
   {
@@ -23,6 +23,7 @@ const routes = [
   // Always leave this as last one,
   // but you can also remove it
   {
+    name: 'notFound',
     path: '/:catchAll(.*)*',
     component: () => import('pages/ErrorNotFound.vue')
   }

@@ -58,6 +58,13 @@
       style="margin-left: 5rem; background-image: linear-gradient(270deg, #8c52ff, #c572ed)"
     ></div>
   </div>
+  <q-spinner-gears
+    v-if="loading"
+    class="absolute-center z-top"
+    color="light-blue"
+    style="transition-duration: 0.3s"
+    size="4rem"
+  />
 </template>
 
 <script setup>
@@ -65,22 +72,25 @@ import { useQuasar } from 'quasar'
 import { ref } from 'vue'
 import { api } from 'boot/axios.js'
 import { setCookie } from 'src/api/cookies.js'
-import Router from 'src/router/index.js'
+import router from 'src/router/index.js'
 
 const $q = useQuasar()
 
 let showPassword = ref(false)
+
+let loading = ref(false)
 
 let name = ref('')
 let email = ref('')
 let password = ref('')
 
 const onSubmit = () => {
+  loading.value = true
   api
-    .post('/register', { name: name.value, email: email.value, password: password.value })
+    .post('/register', {email: email.value, password: password.value })
     .then((res) => {
       setCookie('token', res.data.access_token)
-      Router.push('/emailCheck')
+      router.push('/emailVerification')
     })
     .catch((error) => {
       if (error.status < 500) {
@@ -103,7 +113,7 @@ const onSubmit = () => {
             color: 'red-5',
             textColor: 'white',
             icon: 'cloud-off',
-            message: '',
+            message: 'Невідома помилка, спробуйте пізніше',
           })
         } else {
           $q.notify({
@@ -121,6 +131,7 @@ const onSubmit = () => {
           message: 'Невідома помилка, спробуйте пізніше',
         })
       }
+      loading.value = false
     })
 }
 </script>

@@ -38,6 +38,7 @@
       style="margin-left: 5rem; background-image: linear-gradient(270deg, #ba52ff, #72baed)"
     ></div>
   </div>
+
 </template>
 
 <script setup>
@@ -45,7 +46,7 @@ import { useQuasar } from 'quasar'
 import { ref } from 'vue'
 import { api } from 'boot/axios.js'
 import {getToken} from 'src/api/cookies.js'
-import Router from 'src/router/index.js'
+import router from 'src/router/index.js'
 
 const $q = useQuasar()
 
@@ -62,34 +63,42 @@ function formatCode(val) {
 
 const onSubmit = () => {
   api
-    .post('/email', { code: code.value, headers: { 'token': getToken() } })
+    .post('/verify-email', { code: code.value, }, { headers: { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' } })
     .then(() => {
-      Router.push('/games')
+      router.push('/games')
     })
     .catch((error) => {
-      if (error.status < 500) {
-        if (error.response) {
+    if (error.status === 422) {
+        $q.notify({
+          color: 'red-5',
+          textColor: 'white',
+          icon: 'cloud-off',
+          message: 'Невалідна інформація, будь-ласка перевірте введені поля на правильність',
+        })
+      } else if (error.status < 500) {
+        if (error.request) {
+          $q.notify({
+            color: 'red-5',
+            textColor: 'white',
+            icon: 'cloud-off',
+            message: 'Невідома помилка, спробуйте пізніше',
+          })
+        } else if (error.response) {
           $q.notify({
             color: 'red-5',
             textColor: 'white',
             icon: 'warning',
-            message: error.response.data,
+            message: error.response.data.error,
           })
+          // eslint-disable-next-line no-dupe-else-if
         } else if (error.request) {
           $q.notify({
             color: 'red-5',
             textColor: 'white',
             icon: 'cloud-off',
-            message: '',
+            message: 'Невідома помилка, спробуйте пізніше',
           })
-        } else if (error.status === 422) {
-          $q.notify({
-            color: 'red-5',
-            textColor: 'white',
-            icon: 'cloud-off',
-            message: 'Невалідна інформація, будь-ласка перевірте введені поля на правильність',
-          })
-        } else {
+        }  else {
           $q.notify({
             color: 'red-5',
             textColor: 'white',

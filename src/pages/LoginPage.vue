@@ -58,7 +58,7 @@ import { useQuasar } from 'quasar'
 import { ref } from 'vue'
 import { api } from 'boot/axios.js'
 import { setCookie } from 'src/api/cookies.js'
-import Router from 'src/router/index.js'
+import router from 'src/router/index.js'
 
 const $q = useQuasar()
 
@@ -69,10 +69,10 @@ let password = ref('')
 
 const onSubmit = () => {
   api
-    .post('/login', { email: email.value, password: password.value })
+    .postForm('/login', { username: email.value, password: password.value })
     .then((res) => {
       setCookie('token', res.data.access_token)
-      Router.push('/games')
+      router.push('/games')
     })
     .catch((error) => {
       if (error.status < 500) {
@@ -81,7 +81,7 @@ const onSubmit = () => {
             color: 'red-5',
             textColor: 'white',
             icon: 'warning',
-            message: error.response.data,
+            message: error.response.data.error,
           })
         } else if (error.request) {
           $q.notify({

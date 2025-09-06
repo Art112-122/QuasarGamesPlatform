@@ -13,7 +13,7 @@
     >
       <q-img :src="`/cardimages/${page['imagePath']}`">
         <div class="absolute-bottom">
-          <router-link :to="`/${page['pathname']}`" class="text-h6 link">{{ name }}</router-link>
+          <router-link v-on:click="setGames(page.get('pathName'))" :to="`/games/${page.pathName}`" class="text-h6 link">{{ name }}</router-link>
         </div>
       </q-img>
 
@@ -21,11 +21,12 @@
         <q-btn
           v-for="([category, link], idx) in Object.entries(page['categories'])"
           :key="idx"
-          :to="`/${link}`"
+          :to="`/games/${page.pathName}/${link}`"
           flat
+          v-on:click="setGames(page.get('pathName'))"
           color="primary"
           size="md"
-          class="text-capitalize sergey-5cm-penis"
+          class="text-capitalize"
         >
           {{ category }}
         </q-btn>
@@ -37,6 +38,13 @@
 <script setup>
 import { ref, computed } from 'vue'
 import configuration from '../../config.json'
+import {getCookie, setCookie} from 'src/api/cookies.js'
+
+function setGames(game) {
+  let games = JSON.parse(getCookie("games") ?? "[]")
+  games.push(game)
+  setCookie("games", JSON.stringify(games))
+}
 
 const json = configuration[0]
 const search = ref('')
