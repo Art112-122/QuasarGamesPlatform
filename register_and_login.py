@@ -3,7 +3,7 @@ import smtplib
 import status
 import uvicorn
 from fastapi import FastAPI, Depends, HTTPException, Request, Form
-from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
+from fastapi.responses import JSONResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -12,10 +12,10 @@ from models import User
 from auth import create_jwt, decode_jwt, verify_password, hash_password
 from pydantic import BaseModel, EmailStr
 from fastapi import Request, Form, status
-from starlette.responses import RedirectResponse
 import python_multipart
 import bcrypt
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.requests import Request
 from email.mime.text import MIMEText
 from email_validator import validate_email, EmailNotValidError
 import dns.resolver
@@ -57,7 +57,7 @@ class UserRegisterResponse(BaseModel):
     message: str
 
 class UserLoginRequest(BaseModel):
-    username: EmailStr
+    email: EmailStr
     password: str
 
 class UserLoginResponse(BaseModel):
@@ -67,7 +67,6 @@ class UserLoginResponse(BaseModel):
 
 
 class EmailVerificationRequest(BaseModel):
-    email: EmailStr
     code: str
 
 
@@ -79,6 +78,8 @@ def register(user: UserRegisterRequest, db: Session = Depends(get_db)):
         email = validate_email_and_domain(user.email)
     except Exception as e:
         return JSONResponse(status_code=400, content={"error": str(e)})
+
+    token = create_jwt({"sub": user.email})
 
     existing_user = db.query(User).filter(User.email == email).first()
     if existing_user:
@@ -108,17 +109,19 @@ def register(user: UserRegisterRequest, db: Session = Depends(get_db)):
             content={"error": f"Не удалось отправить письмо: {str(e)}"}
         )
 
-    return {"message": "Пользователь зарегистрирован. Проверьте почту для подтверждения."}
+    return {"message": "Пользователь зарегистрирован. Проверьте почту для подтверждения.", "access_token": token}
 
 
 
 @app.post("/verify-email")
-def verify_email(data: EmailVerificationRequest, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.email == data.email).first()
+def verify_email(data: EmailVerificationRequest, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    payload = decode_jwt(token)
+    email = payload.get("sub")
+    if not email:
+        return JSONResponse(status_code=401, content={"error": "Invalid token"})
+    user = db.query(User).filter(User.email == email).first()
     if not user:
-        return JSONResponse(status_code=404, content={"error": "Пользователь не найден"})
-    if user.is_verified:
-        return {"message": "Email уже подтверждён"}
+        return JSONResponse(status_code=404, content={"error": "Пользыватель не найден"})
     if user.verification_code != data.code:
         return JSONResponse(status_code=400, content={"error": "Неверный код подтверждения"})
 
@@ -129,7 +132,7 @@ def verify_email(data: EmailVerificationRequest, db: Session = Depends(get_db)):
 
 
 
-@app.post("/token", response_model=UserLoginResponse)
+@app.post("/login", response_model=UserLoginResponse)
 def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db),
@@ -141,32 +144,23 @@ def login(
             content={"error": "Неверный email или пароль"}
         )
 
-    token = create_jwt({"sub": user.email})
-    response = JSONResponse(
-        content={"access_token": token, "token_type": "bearer"}
-    )
-    response.set_cookie(key="access_token", value=token, httponly=True)
-    return response
-
-
-
-def get_token_from_cookie(request: Request) -> str:
-    token = request.cookies.get("access_token")
-    if not token:
-        raise JSONResponse(status_code=401, content={"error": "Not authenticated"})
+    token_raw = create_jwt({"sub": user.email})
+    token = UserLoginResponse(access_token=token_raw)
     return token
 
 
+
+
 @app.get("/me")
-def get_me(token: str = Depends(get_token_from_cookie), db: Session = Depends(get_db)):
+def get_me(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     payload = decode_jwt(token)
-    if not payload:
-        return JSONResponse(status_code=401, content={"error": "Invalid token"})
     email = payload.get("sub")
+    if not email:
+        return JSONResponse(status_code=401, content={"error": "Invalid token"})
     user = db.query(User).filter(User.email == email).first()
     if not user:
         return JSONResponse(status_code=404, content={"error": "User not found"})
-    return {"email": user.email, "active": user.is_active}
+    return {"email": user.email}
 
 
 
