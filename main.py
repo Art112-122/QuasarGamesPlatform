@@ -8,7 +8,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from database import SessionLocal, init_db
-from models import User
+from models import User, Game
 from auth import create_jwt, decode_jwt, verify_password, hash_password
 from pydantic import BaseModel, EmailStr
 from fastapi import Request, Form, status
@@ -20,6 +20,10 @@ from email.mime.text import MIMEText
 from email_validator import validate_email, EmailNotValidError
 import dns.resolver
 import random
+from schemas import UserRegisterRequest, UserRegisterResponse, UserLoginRequest, UserLoginResponse, EmailVerificationRequest, GameFilter, GameDetailRequest, GameCreate, GameUpdate
+from fastapi import Header, Depends, Body, Query
+from typing import Optional
+
 
 
 
@@ -37,38 +41,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 
 
-
+##########################################часть з регистрацией#################################################################
 def get_db():
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
-
-class UserRegisterRequest(BaseModel):
-    email: EmailStr
-    password: str
-
-class UserRegisterResponse(BaseModel):
-    message: str
-
-class UserLoginRequest(BaseModel):
-    email: EmailStr
-    password: str
-
-class UserLoginResponse(BaseModel):
-    access_token: str
-    token_type: str = "bearer"
-
-
-
-class EmailVerificationRequest(BaseModel):
-    code: str
-
 
 
 
@@ -81,6 +64,7 @@ def register(user: UserRegisterRequest, db: Session = Depends(get_db)):
 
     token = create_jwt({"sub": user.email})
 
+
     existing_user = db.query(User).filter(User.email == email).first()
     if existing_user:
         return JSONResponse(
@@ -88,9 +72,18 @@ def register(user: UserRegisterRequest, db: Session = Depends(get_db)):
             content={"error": "Пользователь с таким email уже существует"}
         )
 
+
+    existing_username = db.query(User).filter(User.username == user.username).first()
+    if existing_username:
+        return JSONResponse(
+            status_code=400,
+            content={"error": "Пользователь с таким username уже существует"}
+        )
+
     code = generate_verification_code()
     new_user = User(
         email=email,
+        username=user.username,
         hashed_password=hash_password(user.password),
         is_verified=False,
         verification_code=code
@@ -109,7 +102,10 @@ def register(user: UserRegisterRequest, db: Session = Depends(get_db)):
             content={"error": f"Не удалось отправить письмо: {str(e)}"}
         )
 
-    return {"message": "Пользователь зарегистрирован. Проверьте почту для подтверждения.", "access_token": token}
+    return {
+        "message": "Пользователь зарегистрирован. Проверьте почту для подтверждения.",
+        "access_token": token
+    }
 
 
 
@@ -242,6 +238,143 @@ def send_verification_email(to_email: str, code: str):
         server.starttls()
         server.login(smtp_user, smtp_password)
         server.sendmail(smtp_user, to_email, msg.as_string())
+
+
+############################################часть з проверкой на автефикацию############################################
+
+
+
+
+
+@app.get("/games")
+def get_games(
+    game: Optional[str] = Query(None),
+    category: Optional[str] = Query(None),
+    db: Session = Depends(get_db)
+):
+    query = db.query(Game)
+    if game:
+        query = query.filter(Game.game == game)
+    if category:
+        query = query.filter(Game.category == category)
+
+    result = query.all()
+    return [{"id": g.id, "name": g.name, "author": g.author} for g in result]
+
+
+@app.get("/games/id")
+def get_game_by_id(
+    id: int = Query(...),
+    game: str = Query(...),
+    category: str = Query(...),
+    token: str = Depends(oauth2_scheme),
+    db: Session = Depends(get_db)
+):
+    decoded = decode_jwt(token)
+    email = decoded.get("sub")
+
+    if not email:
+        return JSONResponse(status_code=401, content={"error": "Invalid token"})
+
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        return JSONResponse(status_code=404, content={"error": "User not found"})
+
+    db_game = db.query(Game).filter(
+        Game.id == id,
+        Game.game == game,
+        Game.category == category
+    ).first()
+
+    if not db_game:
+        return JSONResponse(status_code=404, content={"error": "Game not found"})
+
+    return {
+        "name": db_game.name,
+        "description": db_game.description,
+        "author": db_game.author,
+        "is_author": db_game.author == user.username,
+        "created_at": db_game.created_at
+    }
+
+@app.post("/games/add")
+def add_game(payload: GameCreate, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    decoded = decode_jwt(token)
+    if not decoded:
+        return JSONResponse(status_code=401, content={"error": "Invalid token"})
+    email = decoded.get("sub")
+    if not email:
+        return JSONResponse(status_code=401, content={"error": "Invalid token"})
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        return JSONResponse(status_code=404, content={"error": "User  not found"})
+    new_game = Game(
+        name=payload.name,
+        description=payload.description,
+        author=user.username,
+        game=payload.game,
+        category=payload.category
+    )
+    db.add(new_game)
+    db.commit()
+    db.refresh(new_game)
+    return {"message": f"Game '{new_game.name}' created successfully"}
+
+
+
+@app.put("/games")
+def update_game(payload: GameUpdate, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    decoded = decode_jwt(token)
+    email = decoded.get("sub")
+
+    if not email:
+        return JSONResponse(status_code=401, content={"error": "Invalid token"})
+
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        return JSONResponse(status_code=404, content={"error": "User not found"})
+
+    db_game = db.query(Game).filter(Game.id == payload.id).first()
+    if not db_game:
+        return JSONResponse(status_code=404, content={"error": "Game not found"})
+
+    if db_game.author != user.username:
+        return JSONResponse(status_code=403, content={"error": "Not your game"})
+
+    if payload.name:
+        db_game.name = payload.name
+    if payload.description:
+        db_game.description = payload.description
+
+    db.commit()
+    db.refresh(db_game)
+    return {"message": f"Game '{db_game.name}' updated successfully"}
+
+
+
+@app.delete("/games")
+def delete_game(id: int = Query(...), token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    decoded = decode_jwt(token)
+    email = decoded.get("sub")
+
+    if not email:
+        return JSONResponse(status_code=401, content={"error": "Invalid token"})
+
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        return JSONResponse(status_code=404, content={"error": "User not found"})
+
+    db_game = db.query(Game).filter(Game.id == id).first()
+    if not db_game:
+        return JSONResponse(status_code=404, content={"error": "Game not found"})
+
+    if db_game.author != user.username:
+        return JSONResponse(status_code=403, content={"error": "Not your game"})
+
+    db.delete(db_game)
+    db.commit()
+    return {"message": f"Game '{db_game.name}' deleted successfully"}
+
 
 
 
