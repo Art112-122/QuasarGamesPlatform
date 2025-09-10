@@ -87,7 +87,7 @@ let password = ref('')
 const onSubmit = () => {
   loading.value = true
   api
-    .post('/register', {email: email.value, password: password.value })
+    .post('/register', {username: name.value ,email: email.value, password: password.value })
     .then((res) => {
       setCookie('token', res.data.access_token)
       router.push('/emailVerification')

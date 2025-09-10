@@ -1,6 +1,6 @@
 <script setup>
 import config from '../../config.json'
-import { useRoute } from 'vue-router'
+import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { computed, ref } from 'vue'
 import router from 'src/router/index.js'
 import { useQuasar } from 'quasar'
@@ -27,10 +27,13 @@ if (foundGame === null || foundGame === undefined) {
   router.push({ name: 'notFound' })
 }
 const modal = ref(false)
-const currentTab = ref(null)
+const currentTab = ref(route.params.category)
 const categories = ref([])
 
+const rows = ref([])
+
 if (foundGame) {
+
   categories.value = Object.entries(foundGame.categories).map(([label, value]) => ({
     label,
     value,
@@ -41,8 +44,6 @@ const columns = ref([
   { name: 'name', label: 'Обьявление', field: 'name' },
   { name: 'author', label: 'Автор', field: 'author' },
 ])
-
-const rows = ref([{ name: 'testname1', author: 'authorname1', id: '1' }])
 
 function truncate(text, length = 30) {
   if (!text) return ''
@@ -64,6 +65,26 @@ const dialogSize = computed(() => {
   }
 })
 
+onBeforeRouteUpdate(async () => {
+  try {
+    const { data } = await api.get(`/games`, {
+      params: {
+        game: route.params.game,
+        category: route.params.category ?? null,
+      },
+    })
+    rows.value = data   // сюда кладем массив
+  } catch (err) {
+    console.error("Ошибка загрузки:", err)
+    $q.notify({
+      color: 'red-5',
+      textColor: 'white',
+      icon: 'warning',
+      message: 'Не вдалося завантажити дані',
+    })
+  }
+})
+
 // -- Form --
 
 const name = ref('')
@@ -74,6 +95,7 @@ const selectedCategory = ref('')
 const options = computed(() => {
   let option = []
   categories.value.forEach((value) => option.push(value))
+  console.log(option)
   return option
 })
 
@@ -85,12 +107,18 @@ const sendForm = () => {
         name: name.value,
         description: description.value,
         game: game.value,
-        category: selectedCategory.value,
+        category: selectedCategory.value?.value,
       },
-      {headers: {'Authorization': `Bearer ${getToken()}`}},
+      { headers: { Authorization: `Bearer ${getToken()}`, 'Content-Type': 'application/json' } },
     )
     .then(() => {
       modal.value = false
+      $q.notify({
+        color: 'green-3',
+        textColor: 'white',
+        icon: 'check',
+        message: 'Ваш пост успішно створений!',
+      })
     })
     .catch((error) => {
       if (error.status < 500) {
@@ -101,8 +129,8 @@ const sendForm = () => {
             icon: 'warning',
             message: 'Невалідна інформація, будь-ласка перевірте введені поля на правильність',
           })
-        }
-        else if (error.response) {
+          console.log(error.response.data)
+        } else if (error.response) {
           $q.notify({
             color: 'red-5',
             textColor: 'white',
@@ -143,6 +171,7 @@ const sendForm = () => {
     align="center"
     @update:model-value="routerPushTo"
   >
+    <q-tab label="Усі" value="null"/>
     <q-tab v-for="cat in categories" :key="cat.value" :name="cat.value" :label="cat.label" />
   </q-tabs>
 

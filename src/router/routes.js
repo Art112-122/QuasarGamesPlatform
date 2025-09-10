@@ -2,7 +2,7 @@ const routes = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
-    children: [{path: "", component: () => import("pages/MainPage.vue")},{ path: '/games', component: () => import('pages/IndexPage.vue') }, { path: '/games/:game', component: () => import('pages/CategoryPage.vue') }, { path: '/games/:game/:category', component: () => import('pages/CategoryPage.vue') }]
+    children: [{path: "", component: () => import("pages/MainPage.vue")},{ path: '/games', component: () => import('pages/IndexPage.vue') }, {path: '/post/view/:id', component: () => import('pages/ViewPost.vue') }, { path: '/games/:game', component: () => import('pages/CategoryPage.vue') }, { path: '/games/:game/:category', component: () => import('pages/CategoryPage.vue') }]
   },
 
   {
