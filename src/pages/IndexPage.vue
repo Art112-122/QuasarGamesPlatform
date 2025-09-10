@@ -13,7 +13,7 @@
     >
       <q-img :src="`/cardimages/${page['imagePath']}`">
         <div class="absolute-bottom">
-          <router-link v-on:click="setGames(page.get('pathName'))" :to="`/games/${page.pathName}`" class="text-h6 link">{{ name }}</router-link>
+          <router-link v-on:click="setGames(name)" :to="`/games/${page.pathName}`" class="text-h6 link">{{ name }}</router-link>
         </div>
       </q-img>
 
@@ -23,7 +23,7 @@
           :key="idx"
           :to="`/games/${page.pathName}/${link}`"
           flat
-          v-on:click="setGames(page.get('pathName'))"
+          v-on:click="setGames(name)"
           color="primary"
           size="md"
           class="text-capitalize"

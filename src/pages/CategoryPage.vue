@@ -51,7 +51,12 @@ function truncate(text, length = 30) {
 }
 
 function routerPushTo() {
-  router.push(`/games/${route.params.game}/${currentTab.value}`)
+  if (currentTab.value === 'null' || currentTab.value === '') {
+    router.push(`/games/${route.params.game}`)
+  }
+  else {
+    router.push(`/games/${route.params.game}/${currentTab.value}`)
+  }
 }
 
 const dialogSize = computed(() => {
@@ -73,7 +78,7 @@ onBeforeRouteUpdate(async () => {
         category: route.params.category ?? null,
       },
     })
-    rows.value = data   // сюда кладем массив
+    rows.value = data
   } catch (err) {
     console.error("Ошибка загрузки:", err)
     $q.notify({
@@ -171,7 +176,7 @@ const sendForm = () => {
     align="center"
     @update:model-value="routerPushTo"
   >
-    <q-tab label="Усі" value="null"/>
+    <q-tab label="Усі" value=""/>
     <q-tab v-for="cat in categories" :key="cat.value" :name="cat.value" :label="cat.label" />
   </q-tabs>
 
