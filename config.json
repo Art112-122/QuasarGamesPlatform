@@ -6,7 +6,8 @@
         "imagePath": "cs2.jpg",
         "categories":
           {
-            "Аккаунты": "accounts"
+            "Аккаунти": "accounts",
+            "Ключи": "keys"
           }
 
       },
@@ -149,7 +150,7 @@
 
       },
       "Counter Strike 4": {
-        "pathName": "CounterStrike2",
+        "pathName": "CounterStrike4",
         "imagePath": "cs2.jpg",
         "categories":
           {
