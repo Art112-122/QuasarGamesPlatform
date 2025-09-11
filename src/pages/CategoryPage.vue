@@ -1,7 +1,7 @@
 <script setup>
 import config from '../../config.json'
-import { onBeforeRouteUpdate, useRoute } from 'vue-router'
-import { computed, ref } from 'vue'
+import { useRoute } from 'vue-router'
+import { computed, ref, watch, onMounted } from 'vue'
 import router from 'src/router/index.js'
 import { useQuasar } from 'quasar'
 import { api } from 'boot/axios.js'
@@ -27,19 +27,25 @@ if (foundGame === null || foundGame === undefined) {
   router.push({ name: 'notFound' })
 }
 const modal = ref(false)
-const currentTab = ref(route.params.category)
 const categories = ref([])
 
 const rows = ref([])
 
-if (foundGame) {
+const currentTab = ref(route.params.category ?? null)
 
+if (foundGame) {
   categories.value = Object.entries(foundGame.categories).map(([label, value]) => ({
     label,
     value,
   }))
-  currentTab.value = categories.value[0]?.value || null
+
+  if (categories.value.some(cat => cat.value === route.params.category)) {
+    currentTab.value = route.params.category
+  } else {
+    currentTab.value = categories.value[0]?.value || null
+  }
 }
+
 const columns = ref([
   { name: 'name', label: 'Обьявление', field: 'name' },
   { name: 'author', label: 'Автор', field: 'author' },
@@ -51,13 +57,13 @@ function truncate(text, length = 30) {
 }
 
 function routerPushTo() {
-  if (currentTab.value === 'null' || currentTab.value === '') {
+  if (currentTab.value === 'all') {
     router.push(`/games/${route.params.game}`)
-  }
-  else {
+  } else {
     router.push(`/games/${route.params.game}/${currentTab.value}`)
   }
 }
+
 
 const dialogSize = computed(() => {
   let size = $q.screen.width
@@ -70,7 +76,9 @@ const dialogSize = computed(() => {
   }
 })
 
-onBeforeRouteUpdate(async () => {
+
+
+async function loadData() {
   try {
     const { data } = await api.get(`/games`, {
       params: {
@@ -88,7 +96,23 @@ onBeforeRouteUpdate(async () => {
       message: 'Не вдалося завантажити дані',
     })
   }
-})
+}
+
+onMounted(loadData)
+
+watch(
+  () => [route.params.game, route.params.category],
+  () => {
+    currentTab.value = route.params.category ?? 'all'
+    loadData()
+  }
+)
+
+
+
+
+
+
 
 // -- Form --
 
@@ -100,11 +124,11 @@ const selectedCategory = ref('')
 const options = computed(() => {
   let option = []
   categories.value.forEach((value) => option.push(value))
-  console.log(option)
   return option
 })
 
 const sendForm = () => {
+
   api
     .post(
       '/games/add',
@@ -176,7 +200,7 @@ const sendForm = () => {
     align="center"
     @update:model-value="routerPushTo"
   >
-    <q-tab label="Усі" value=""/>
+    <q-tab label="Усі" name="all"/>
     <q-tab v-for="cat in categories" :key="cat.value" :name="cat.value" :label="cat.label" />
   </q-tabs>
 
