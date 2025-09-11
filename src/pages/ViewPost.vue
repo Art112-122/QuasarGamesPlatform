@@ -19,7 +19,7 @@ async function loadData() {
   try {
     const response = await api.get('/games/id', {
       params: { id: route.params.id },
-      headers: { Authorization: `Bearer ${getToken()}` }
+      headers: { Authorization: `Bearer ${getToken()}` },
     })
     const data = response.data
     createdAt.value = data.created_at
@@ -32,7 +32,7 @@ async function loadData() {
       color: 'red-5',
       textColor: 'white',
       icon: 'warning',
-      message: 'Не вдалося завантажити дані. Ви будете повернені назад...'
+      message: 'Не вдалося завантажити дані. Ви будете повернені назад...',
     })
     setTimeout(() => {
       router.back()
@@ -55,7 +55,7 @@ const deletePost = () => {
   api
     .delete('/games', {
       params: { id: route.params.id },
-      headers: { Authorization: `Bearer ${getToken()}` }
+      headers: { Authorization: `Bearer ${getToken()}` },
     })
     .then(() => {
       deleteModal.value = false
@@ -63,35 +63,36 @@ const deletePost = () => {
         color: 'green-5',
         textColor: 'white',
         icon: 'info',
-        message: 'Публікація видалена. Ви будете повернені назад...'
+        message: 'Публікація видалена. Ви будете повернені назад...',
       })
       setTimeout(() => {
         router.back()
       }, 3000)
-    }).catch((error) => {
-    if (error.status < 500) {
-      $q.notify({
-        color: 'red-5',
-        textColor: 'white',
-        icon: 'warning',
-        message: 'Не вдалося завантажити дані. Ви будете повернені назад...'
-      })
-    }
-    else {
-      $q.notify({
-        color: 'red-5',
-        textColor: 'white',
-        icon: 'warning',
-        message: 'Критична помилка, спробуйте пізніше'
-      })
-    }
-  })
+    })
+    .catch((error) => {
+      if (error.status < 500) {
+        $q.notify({
+          color: 'red-5',
+          textColor: 'white',
+          icon: 'warning',
+          message: 'Не вдалося завантажити дані. Ви будете повернені назад...',
+        })
+      } else {
+        $q.notify({
+          color: 'red-5',
+          textColor: 'white',
+          icon: 'warning',
+          message: 'Критична помилка, спробуйте пізніше',
+        })
+      }
+    })
 }
 </script>
 
 <template>
   <div class="q-pa-md row">
     <div
+      v-if="$q.screen.width > 800"
       class="col-2"
       style="
         margin-right: 5rem;
@@ -99,7 +100,7 @@ const deletePost = () => {
         border-radius: 1%;
       "
     ></div>
-    <div class="col-5">
+    <div class="col-7 col-md-7 col-sm-7 col-lg-5">
       <q-avatar icon="arrow_back" size="60px" v-on:click="router.back()"></q-avatar>
       <q-timeline color="primary">
         <q-timeline-entry heading>
@@ -115,17 +116,31 @@ const deletePost = () => {
             {{ description }}
           </div>
           <div v-else>
-            <q-input v-model="description" autofocus autogrow label="Тепер можете редагувати" />
+            <q-btn label="Змінити" style="margin: 0.5rem" color="green"></q-btn>
+            <q-btn label="Відмінити зміни" style="margin: 0.5rem" color="red"></q-btn>
+            <q-input
+              v-model="description"
+              style="min-height: 400px"
+              autofocus
+              autogrow
+              label="Тепер можете редагувати"
+            />
           </div>
         </q-timeline-entry>
         <q-timeline-entry />
       </q-timeline>
     </div>
     <div class="col" style="margin-right: 5rem">
+      <div v-if="$q.screen.width <= 600">
+        <q-avatar color="primary" size="40px">
+          {{ author ? author[0].toUpperCase() : '' }}
+        </q-avatar>
+        {{ author }}
+      </div>
       <q-btn
         style="margin: 0.5rem"
         v-if="is_author"
-        label="Змінити"
+        :label="changing ? 'Зупинити змінювання' : 'Змінити'"
         v-on:click="changingData"
         color="green"
       />
@@ -136,14 +151,42 @@ const deletePost = () => {
         label="Видалити"
         color="red"
       />
-      <div class="text-h6" style="margin-top: 4rem">
-        <q-avatar color="primary" size="40px">
-          {{ author ? author[0].toUpperCase() : '' }}
-        </q-avatar>
-        {{ author }}
-      </div>
+      <q-card
+        v-if="$q.screen.width > 600"
+        style="margin-top: 4rem; padding: 1rem; min-height: 400px"
+      >
+        <div class="text-h6">
+          <q-avatar color="primary" size="40px">
+            {{ author ? author[0].toUpperCase() : '' }}
+          </q-avatar>
+          {{ author }}
+        </div>
+        <q-separator style="margin-top: 1rem; margin-bottom: 1rem" />
+        <div class="q-pa-md row justify-center">
+          <div style="width: 100%; max-width: 400px">
+            <q-chat-message name="Я" :text="[`Привіт, я з привіду ${title}`]" sent />
+          </div>
+        </div>
+        <q-btn
+          flat
+          label="Написати"
+          class="absolute-bottom"
+          v-on:click="
+            $q.notify({
+              color: 'blue',
+              textColor: 'white',
+              icon: 'warning',
+              message: 'Ця функція в розробці...',
+            })
+          "
+          style="padding-bottom: 0.5rem; padding-top: 0.5rem"
+        />
+      </q-card>
     </div>
   </div>
+
+  <!-- dialog -->
+
   <q-dialog v-model="deleteModal" persistent>
     <q-card>
       <q-card-section class="row items-center">
@@ -152,8 +195,8 @@ const deletePost = () => {
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="Скасувати" color="white" v-on:click="deletePost" v-close-popup />
-        <q-btn flat label="Видалити" color="red" />
+        <q-btn flat label="Скасувати" color="white" v-close-popup />
+        <q-btn flat label="Видалити" color="red" v-on:click="deletePost" />
       </q-card-actions>
     </q-card>
   </q-dialog>

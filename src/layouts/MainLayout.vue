@@ -66,7 +66,7 @@ const linksList = [
     title: 'Discord',
     caption: 'Наш Діскорд',
     icon: 'chat',
-    link: 'https://chat.quasar.dev',
+    link: 'https://discord.gg/VBjW9NERQv',
     essential: true
   }
 ]

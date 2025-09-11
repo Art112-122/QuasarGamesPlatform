@@ -31,7 +31,7 @@ const categories = ref([])
 
 const rows = ref([])
 
-const currentTab = ref(route.params.category ?? null)
+const currentTab = ref(route.params.category ?? '')
 
 if (foundGame) {
   categories.value = Object.entries(foundGame.categories).map(([label, value]) => ({
