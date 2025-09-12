@@ -1,10 +1,27 @@
 <script setup>
 import jsonObject from '../../config.json'
-import { getCookie } from '../api/cookies.js'
+import { getCookie, getToken } from '../api/cookies.js'
+import { api } from 'boot/axios.js'
+import { ref } from 'vue'
 
 const json = jsonObject[0]?.pages ?? {}
 
-const username = "TestName1"
+const username = ref('')
+
+async function loadAccountInfo() {
+  api
+    .get('/me', { headers: { Authorization: `Bearer ${getToken()}` } })
+    .then((data) => {
+      username.value = data.data.username
+    })
+    .catch((error) => {
+      if (error) {
+        username.value = ''
+      }
+    })
+}
+
+loadAccountInfo()
 
 const games = JSON.parse(getCookie("games") ?? "[]")
 
@@ -17,7 +34,7 @@ const filtered = Object.entries(json)
 <template>
 
   <h1 class="subtitle text-center">
-    Вітаю, <b v-if="username">{{ username }}!</b><b v-else>Мандрівнику!</b>
+    Вітаю, <b v-if="username">{{ username }}!</b><b v-else>Геймеру!</b>
   </h1>
   <h4 class="text-center subtitle" v-if="games.length">Ваші Ігри</h4>
   <q-page class="q-pa-md row">

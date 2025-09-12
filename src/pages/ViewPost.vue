@@ -132,7 +132,6 @@ const updatePost = () => {
           icon: 'warning',
           message: 'Критична помилка, спробуйте пізніше',
         })
-        console.log(error)
       }
     })
 }
@@ -150,7 +149,7 @@ const updatePost = () => {
       "
     ></div>
     <div class="col-7 col-md-7 col-sm-7 col-lg-5">
-      <q-avatar icon="arrow_back" size="60px" v-on:click="router.back()"></q-avatar>
+      <q-avatar icon="arrow_back" class="back_arrow" size="60px" v-on:click="router.back()"></q-avatar>
       <q-timeline color="primary">
         <q-timeline-entry heading>
           <h2 class="oswald-bold word-wrap">{{ title }}</h2>
@@ -251,4 +250,12 @@ const updatePost = () => {
   </q-dialog>
 </template>
 
-<style scoped></style>
+<style scoped>
+.back_arrow {
+  cursor: pointer;
+  transition-duration: 0.2s;
+}
+.back_arrow:hover {
+  background-color: rgba(255, 255, 255, 0.07);
+}
+</style>
