@@ -1,8 +1,8 @@
 import smtplib
+from email.policy import default
 
-import status
 import uvicorn
-from fastapi import FastAPI, Depends, HTTPException, Request, Form
+from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -10,18 +10,14 @@ from sqlalchemy.orm import Session
 from database import SessionLocal, init_db
 from models import User, Game
 from auth import create_jwt, decode_jwt, verify_password, hash_password
-from pydantic import BaseModel, EmailStr
-from fastapi import Request, Form, status
 import python_multipart
-import bcrypt
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.requests import Request
 from email.mime.text import MIMEText
 from email_validator import validate_email, EmailNotValidError
 import dns.resolver
 import random
-from schemas import UserRegisterRequest, UserRegisterResponse, UserLoginRequest, UserLoginResponse, EmailVerificationRequest, GameFilter, GameDetailRequest, GameCreate, GameUpdate
-from fastapi import Header, Depends, Body, Query
+from schemas import UserRegisterRequest, UserRegisterResponse, UserLoginRequest, UserLoginResponse, EmailVerificationRequest, GameFilter,  GameCreate, GameUpdate
+from fastapi import Header, Depends,  Query
 from typing import Optional
 
 
@@ -156,7 +152,7 @@ def get_me(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == email).first()
     if not user:
         return JSONResponse(status_code=404, content={"error": "User not found"})
-    return {"email": user.email}
+    return {"email": user.email, "username": user.username}
 
 
 
@@ -206,6 +202,7 @@ def send_verification_email(to_email: str, code: str):
           margin: 20px 0;
         }}
         .header-img {{
+          border-radius: 10%;
           width: 100px;
           margin-bottom: 20px;
         }}
@@ -265,25 +262,19 @@ def get_games(
 @app.get("/games/id")
 def get_game_by_id(
     id: int = Query(...),
-    game: str = Query(...),
-    category: str = Query(...),
-    token: str = Depends(oauth2_scheme),
+    token: Optional[str] = Depends(OAuth2PasswordBearer(tokenUrl="login", auto_error=False)),
     db: Session = Depends(get_db)
 ):
-    decoded = decode_jwt(token)
-    email = decoded.get("sub")
-
-    if not email:
-        return JSONResponse(status_code=401, content={"error": "Invalid token"})
-
-    user = db.query(User).filter(User.email == email).first()
-    if not user:
-        return JSONResponse(status_code=404, content={"error": "User not found"})
+    user = None
+    if token:
+        decoded = decode_jwt(token)
+        if not decoded is None:
+            email = decoded.get("sub")
+            if email:
+                user = db.query(User).filter(User.email == email).first()
 
     db_game = db.query(Game).filter(
         Game.id == id,
-        Game.game == game,
-        Game.category == category
     ).first()
 
     if not db_game:
@@ -293,7 +284,7 @@ def get_game_by_id(
         "name": db_game.name,
         "description": db_game.description,
         "author": db_game.author,
-        "is_author": db_game.author == user.username,
+        "is_author": user and db_game.author == user.username,
         "created_at": db_game.created_at
     }
 
@@ -341,8 +332,6 @@ def update_game(payload: GameUpdate, token: str = Depends(oauth2_scheme), db: Se
     if db_game.author != user.username:
         return JSONResponse(status_code=403, content={"error": "Not your game"})
 
-    if payload.name:
-        db_game.name = payload.name
     if payload.description:
         db_game.description = payload.description
 
@@ -379,5 +368,4 @@ def delete_game(id: int = Query(...), token: str = Depends(oauth2_scheme), db: S
 
 
 if __name__ == "__main__":
-
-    uvicorn.run("register_and_login:app", port=8000, reload=True)
+    uvicorn.run("main:app", port=8000, reload=True)
