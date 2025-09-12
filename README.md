@@ -84,4 +84,4 @@ quasar dev
 - **Власний рахунок** та платежі на сайті з гарантією безпеки
 - **Аукціон** На якому користувачі зможуть швидко та надійно продавати товари
 
-##[Презентація]([https://example.com](https://www.canva.com/design/DAGyxEfM0cI/5hR8NjnCQwd2hf2FXjvOGA/edit?utm_content=DAGyxEfM0cI&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton))
+## [Презентація]([https://example.com](https://www.canva.com/design/DAGyxEfM0cI/5hR8NjnCQwd2hf2FXjvOGA/edit?utm_content=DAGyxEfM0cI&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton))
