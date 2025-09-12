@@ -31,7 +31,7 @@ const categories = ref([])
 
 const rows = ref([])
 
-const currentTab = ref(route.params.category ?? '')
+const currentTab = ref(route.params.category ?? 'all')
 
 if (foundGame) {
   categories.value = Object.entries(foundGame.categories).map(([label, value]) => ({
@@ -307,7 +307,7 @@ const sendForm = () => {
 
 .game-image img {
   border-radius: 10%;
-  max-width: 100%;
+  max-width: 300px;
   height: auto;
   object-fit: contain;
   display: block;

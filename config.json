@@ -7,156 +7,118 @@
         "categories":
           {
             "Аккаунти": "accounts",
-            "Ключи": "keys"
+            "Ключі": "keys",
+            "Скіни": "skins"
           }
-
       },
-      "C2": {
-        "pathName": "CounterStrike2",
-        "imagePath": "cs2.jpg",
+      "Valorant": {
+        "pathName": "Valorant",
+        "imagePath": "valorant.jpg",
         "categories":
         {
-          "Аккаунты": "accounts"
+          "Аккаунти": "accounts",
+          "Донат": "donat",
+          "Послуги": "service"
         }
-
       },
-      "C3": {
-        "pathName": "CounterStrike2",
-        "imagePath": "cs2.jpg",
+      "Roblox": {
+        "pathName": "Roblox",
+        "imagePath": "roblox.png",
         "categories":
         {
-          "Аккаунты": "accounts"
+          "Плейси": "plays",
+          "Донат": "donat",
+          "Послуги": "service"
         }
-
       },
-      "C4": {
-        "pathName": "CounterStrike2",
-        "imagePath": "cs2.jpg",
+      "Capitan of Industry": {
+        "pathName": "capitanOfIndustry",
+        "imagePath": "capitanofindustry.png",
         "categories":
         {
-          "Аккаунты": "accounts"
+          "Аккаунти": "accounts",
+          "Розвиток": "grow"
         }
-
       },
-      "C5": {
-        "pathName": "CounterStrike2",
-        "imagePath": "cs2.jpg",
+      "Dota 2": {
+        "pathName": "dota2",
+        "imagePath": "dota2.png",
         "categories":
         {
-          "Аккаунты": "accounts"
+          "Аккаунти": "accounts",
+          "Предмети": "items",
+          "Послуги": "service"
         }
-
       },
-      "C9": {
-        "pathName": "CounterStrike2",
-        "imagePath": "cs2.jpg",
+      "Hollow Knight": {
+        "pathName": "hollowKnight",
+        "imagePath": "hollowknight.png",
         "categories":
         {
-          "Аккаунты": "accounts"
+          "Аккаунти": "accounts",
+          "Ключі": "keys",
+          "Послуги": "service"
         }
-
       },
-      "C7": {
-        "pathName": "CounterStrike2",
-        "imagePath": "cs2.jpg",
+      "Hollow Knight: Silksong": {
+        "pathName": "hollowKnightSilksong",
+        "imagePath": "hollowknightsilksong.png",
         "categories":
         {
-          "Аккаунты": "accounts"
+          "Аккаунти": "accounts",
+          "Ключі": "keys",
+          "Послуги": "service"
         }
-
       },
-      "C": {
-        "pathName": "CounterStrike2",
-        "imagePath": "cs2.jpg",
+      "Team Fortress 2": {
+        "pathName": "TeamFortress2",
+        "imagePath": "teamfortress2.png",
         "categories":
         {
-          "Аккаунты": "accounts"
+          "Аккаунти": "accounts",
+          "Предмети": "items",
+          "Послуги": "service"
         }
-
       },
-      "2C": {
-        "pathName": "CounterStrike2",
-        "imagePath": "cs2.jpg",
+      "Peak": {
+        "pathName": "peak",
+        "imagePath": "peak.png",
         "categories":
         {
-          "Аккаунты": "accounts"
+          "Аккаунти": "accounts",
+          "Ключі": "keys",
+          "Послуги": "service"
         }
-
-      },"3C": {
-        "pathName": "CounterStrike2",
-        "imagePath": "cs2.jpg",
-        "categories":
-        {
-          "Аккаунты": "accounts"
-        }
-
-      },"4C": {
-        "pathName": "CounterStrike2",
-        "imagePath": "cs2.jpg",
-        "categories":
-        {
-          "Аккаунты": "accounts"
-        }
-
-      },"5C": {
-        "pathName": "CounterStrike2",
-        "imagePath": "cs2.jpg",
-        "categories":
-        {
-          "Аккаунты": "accounts"
-        }
-
-      },"C6": {
-        "pathName": "CounterStrike2",
-        "imagePath": "cs2.jpg",
-        "categories":
-        {
-          "Аккаунты": "accounts"
-        }
-
-      },"7C": {
-        "pathName": "CounterStrike2",
-        "imagePath": "cs2.jpg",
-        "categories":
-        {
-          "Аккаунты": "accounts"
-        }
-
-      },"8C": {
-        "pathName": "CounterStrike2",
-        "imagePath": "cs2.jpg",
-        "categories":
-        {
-          "Аккаунты": "accounts"
-        }
-
-      },"9C": {
-        "pathName": "CounterStrike2",
-        "imagePath": "cs2.jpg",
-        "categories":
-        {
-          "Аккаунты": "accounts"
-        }
-
       },
-
-      "": {
-        "pathName": "CounterStrike2",
-        "imagePath": "cs2.jpg",
+      "Titanfall 2": {
+        "pathName": "titanfall2",
+        "imagePath": "titanfall2.png",
         "categories":
-          {
-            "Аккаунты": "accounts"
-          }
-
+        {
+          "Аккаунти": "accounts",
+          "Ключі": "keys",
+          "Gamepass": "gamepass"
+        }
       },
-      "Counter Strike 4": {
-        "pathName": "CounterStrike4",
-        "imagePath": "cs2.jpg",
+      "Rust": {
+        "pathName": "rust",
+        "imagePath": "rust.png",
         "categories":
-          {
-            "Аккаунты": "accounts"
-          }
-
+        {
+          "Аккаунти": "accounts",
+          "Ключі": "keys",
+          "Предмети": "items"
+        }
+      },
+      "Fortnite": {
+        "pathName": "fortnite",
+        "imagePath": "fortnite.png",
+        "categories":
+        {
+          "Аккаунти": "accounts",
+          "В-бакси": "vbucks",
+          "Послуги": "service"
+        }
       }
     }
   }

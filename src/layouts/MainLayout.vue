@@ -2,7 +2,17 @@
   <q-layout view="lHh Lpr lFf">
     <q-header>
       <q-toolbar style="background-image: linear-gradient(#25193e, #06083a)">
+
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
+
+        <q-toolbar-title>LootMarket</q-toolbar-title>
+
+        <q-drawer v-model="leftDrawerOpen" class="absolute-left" show-if-above bordered>
+          <q-list>
+            <q-item-label header> Essential Links</q-item-label>
+            <EssentialLink v-for="link in linksList" :key="link.title" v-bind="link" />
+          </q-list>
+        </q-drawer>
 
         <div v-if="isAuth" class="flex items-center q-ml-auto">
           <q-avatar color="primary" size="40px" class="q-mr-sm">
@@ -13,16 +23,12 @@
             <div class="text-caption text-grey">{{ email }}</div>
           </div>
         </div>
+        <div v-else class="flex q-ml-auto">
+          <q-btn v-on:click="router.push('/register')" label="Регестрація" style="margin: 0.5rem" color="blue-4"></q-btn>
+          <q-btn v-on:click="router.push('/login')" label="Вхід" style="margin: 0.5rem" color="blue-3"><router-link to="/login"></router-link></q-btn>
+        </div>
       </q-toolbar>
     </q-header>
-
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
-      <q-list>
-        <q-item-label header> Essential Links</q-item-label>
-
-        <EssentialLink v-for="link in linksList" :key="link.title" v-bind="link" />
-      </q-list>
-    </q-drawer>
 
     <q-page-container>
       <router-view />
@@ -30,11 +36,13 @@
   </q-layout>
 </template>
 
+
 <script setup>
 import { ref } from 'vue'
 import EssentialLink from 'components/EssentialLink.vue'
 import { api } from 'boot/axios.js'
 import { getToken } from 'src/api/cookies.js'
+import router from 'src/router/index.js'
 
 const linksList = [
   {
@@ -80,12 +88,11 @@ async function loadAccountInfo() {
     .catch((error) => {
       if (error.status < 500) {
         isAuth.value = false
-      }
-      else {
+      } else {
         isAuth.value = false
       }
     })
 }
-
 loadAccountInfo()
+
 </script>

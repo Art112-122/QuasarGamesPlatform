@@ -7,7 +7,7 @@
   <q-page class="q-pa-md row">
     <q-card
       class="col-lg-2 col-md-2 col-sm-3 col-5 soso-pikmi-misha"
-      style="margin-left: 1rem; margin-right: 1rem; margin-bottom: 2rem"
+      style="margin-left: 1rem; margin-right: 1rem; margin-bottom: 2rem; max-height: 15rem"
       v-for="[name, page] in filteredPages"
       :key="name"
     >

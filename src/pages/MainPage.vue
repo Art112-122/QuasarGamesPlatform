@@ -42,7 +42,7 @@ const filtered = Object.entries(json)
       v-for="(game, idx) in filtered"
       :key="game.name || idx"
       class="col-lg-2 col-md-2 col-sm-3 col-5"
-      style="margin-left: 1rem; margin-right: 1rem; margin-bottom: 2rem; max-height: 12rem"
+      style="margin-left: 1rem; margin-right: 1rem; margin-bottom: 2rem; max-height: 15rem"
     >
       <q-img :src="`/cardimages/${game.imagePath}`">
         <div class="absolute-bottom">
@@ -52,7 +52,7 @@ const filtered = Object.entries(json)
         </div>
       </q-img>
 
-      <q-card-actions class="q-gutter-md">
+      <q-card-actions class="">
         <q-btn
           v-for="([category, link], idx2) in Object.entries(game.categories || {})"
           :key="idx2"
