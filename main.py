@@ -1,23 +1,20 @@
 import smtplib
-from email.policy import default
 
 import uvicorn
-from fastapi import FastAPI, Request, status
+from fastapi import FastAPI
 from fastapi.responses import JSONResponse
-from fastapi.templating import Jinja2Templates
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from database import SessionLocal, init_db
-from models import User, Game
-from auth import create_jwt, decode_jwt, verify_password, hash_password
-import python_multipart
+from app.database import init_db, SessionLocal
+from app.auth import create_jwt, decode_jwt, verify_password, hash_password
+from app.models import Game, User
 from fastapi.middleware.cors import CORSMiddleware
 from email.mime.text import MIMEText
 from email_validator import validate_email, EmailNotValidError
 import dns.resolver
 import random
-from schemas import UserRegisterRequest, UserRegisterResponse, UserLoginRequest, UserLoginResponse, EmailVerificationRequest, GameFilter,  GameCreate, GameUpdate
-from fastapi import Header, Depends,  Query
+from app.schemas import UserRegisterRequest, UserLoginResponse, EmailVerificationRequest, GameCreate, GameUpdate
+from fastapi import Depends,  Query
 from typing import Optional
 
 

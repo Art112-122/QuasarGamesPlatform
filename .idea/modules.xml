@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/QuasarGamesPlatform.iml" filepath="$PROJECT_DIR$/.idea/QuasarGamesPlatform.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/QuasarGamesPlatformGit.iml" filepath="$PROJECT_DIR$/.idea/QuasarGamesPlatformGit.iml" />
     </modules>
   </component>
 </project>
