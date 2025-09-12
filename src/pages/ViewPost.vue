@@ -27,6 +27,8 @@ async function loadData() {
     description.value = data.description
     author.value = data.author
     is_author.value = data.is_author
+    descriptionToChange.value = data.description
+
   } catch {
     $q.notify({
       color: 'red-5',
@@ -42,10 +44,13 @@ async function loadData() {
 
 onMounted(loadData)
 
+
+const descriptionToChange = ref(description.value)
 const changing = ref(false)
 const changingData = () => {
   if (is_author.value) {
     changing.value = !changing.value
+    if (!changing.value) {descriptionToChange.value = description.value}
   }
 }
 
@@ -87,6 +92,50 @@ const deletePost = () => {
       }
     })
 }
+
+// -- update --
+
+const updatePost = () => {
+  api
+    .put(
+      '/games',
+      {
+        id: route.params.id,
+        description: descriptionToChange.value,
+      },
+      { headers: { Authorization: `Bearer ${getToken()}` } },
+    )
+    .then(() => {
+      changing.value = false
+      $q.notify({
+        color: 'green-5',
+        textColor: 'white',
+        icon: 'info',
+        message: 'Публікація змінена, сторінка буде оновлена...',
+      })
+      setTimeout(() => {
+        window.location.reload()
+      }, 3000)
+    })
+    .catch((error) => {
+      if (error.status < 500) {
+        $q.notify({
+          color: 'red-5',
+          textColor: 'white',
+          icon: 'warning',
+          message: 'Не вдалося оновити, спробуйте пізніше',
+        })
+      } else {
+        $q.notify({
+          color: 'red-5',
+          textColor: 'white',
+          icon: 'warning',
+          message: 'Критична помилка, спробуйте пізніше',
+        })
+        console.log(error)
+      }
+    })
+}
 </script>
 
 <template>
@@ -116,10 +165,10 @@ const deletePost = () => {
             {{ description }}
           </div>
           <div v-else>
-            <q-btn label="Змінити" style="margin: 0.5rem" color="green"></q-btn>
-            <q-btn label="Відмінити зміни" style="margin: 0.5rem" color="red"></q-btn>
+            <q-btn label="Змінити" v-on:click="updatePost" style="margin: 0.5rem" color="green"></q-btn>
+            <q-btn label="Відмінити зміни" v-on:click="changingData" style="margin: 0.5rem" color="red"></q-btn>
             <q-input
-              v-model="description"
+              v-model="descriptionToChange"
               style="min-height: 400px"
               autofocus
               autogrow

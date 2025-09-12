@@ -25,7 +25,7 @@ const filtered = Object.entries(json)
       v-for="(game, idx) in filtered"
       :key="game.name || idx"
       class="col-lg-2 col-md-2 col-sm-3 col-5"
-      style="margin-left: 1rem; margin-right: 1rem; margin-bottom: 2rem; max-height: 10rem"
+      style="margin-left: 1rem; margin-right: 1rem; margin-bottom: 2rem; max-height: 12rem"
     >
       <q-img :src="`/cardimages/${game.imagePath}`">
         <div class="absolute-bottom">
