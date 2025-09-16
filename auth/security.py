@@ -15,7 +15,7 @@ ALGORITHM = "HS256"
 def create_jwt(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     to_encode = data.copy()
     now_utc = datetime.now(timezone.utc)
-    expire = now_utc + (expires_delta or timedelta(minutes=60))
+    expire = now_utc + (expires_delta or timedelta(minutes=30))
     to_encode.update({
         "exp": expire,
         "iat": now_utc,
@@ -26,8 +26,7 @@ def create_jwt(data: dict, expires_delta: Optional[timedelta] = None) -> str:
 def decode_jwt(token: str):
     try:
         return api_jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-    except Exception as e:
-        print(f"{e}")
+    except Exception:
         return None
 
 def hash_password(password: str) -> str:

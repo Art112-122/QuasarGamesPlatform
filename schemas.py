@@ -35,11 +35,12 @@ class GameDetailRequest(BaseModel):
 
 class GameCreate(BaseModel):
     name: str
-    description: str
+    description: Optional[str] = None
     game: str
     category: str
 
 
 class GameUpdate(BaseModel):
     id: int
+    name: Optional[str] = None
     description: Optional[str] = None
