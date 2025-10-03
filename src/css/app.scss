@@ -1,6 +1,28 @@
 // app global css in SCSS form
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
 
+
+//Ползунок
+
+.body--dark::-webkit-scrollbar .body--light::-webkit-scrollbar {
+  width: 8px;
+  height: 8px
+}
+
+.body--dark::-webkit-scrollbar-track .body--light::-webkit-scrollbar-track {
+  background: #1e1e1e
+}
+
+.body--dark::-webkit-scrollbar-thumb .body--light::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 4px
+}
+
+.body--dark::-webkit-scrollbar-thumb:hover .body--light::-webkit-scrollbar-thumb:hover {
+  background: #777
+}
+
+
 .oswald-bold {
   font-family: 'Oswald', sans-serif !important;
   font-weight: 700 !important;
