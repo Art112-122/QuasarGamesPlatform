@@ -42,6 +42,7 @@ const user = ref({
 
 <style lang="sass" scoped>
 
+
 // чат
 .q-message-container
   background: transparent !important

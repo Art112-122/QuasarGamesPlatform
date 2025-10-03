@@ -7,6 +7,7 @@ const $q = useQuasar()
 
 const isOpen = ref(true)
 
+
 const data = ref([
   { name: 'TestName1', email: 'test@gmail.com' },
   { name: 'TestEmail1', email: 'test@gmail.com' },
