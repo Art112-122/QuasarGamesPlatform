@@ -59,6 +59,7 @@ const data = ref([
                 <q-item-section avatar>
                   <q-avatar color="primary" text-color="white">
                     {{ item.name ? item.name[0].toUpperCase() : '' }}
+                    <q-badge floating style="border-radius: 50%" color="teal"></q-badge>
                   </q-avatar>
                 </q-item-section>
                 <q-item-section>
