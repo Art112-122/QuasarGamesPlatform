@@ -9,22 +9,22 @@ const isOpen = ref(true)
 
 
 const data = ref([
+  { name: 'TestName1', email: 'test@gmail.com', online: true },
+  { name: 'TestEmail1', email: 'test@gmail.com' },
+  { name: 'TestName1', email: 'test@gmail.com' },
+  { name: 'TestEmail1', email: 'test@gmail.com', online: true },
+  { name: 'TestName1', email: 'test@gmail.com' },
+  { name: 'TestEmail1', email: 'test@gmail.com', online: true },
+  { name: 'TestName1', email: 'test@gmail.com' },
+  { name: 'TestEmail1', email: 'test@gmail.com' },
+  { name: 'TestName1', email: 'test@gmail.com', online: true },
+  { name: 'TestEmail1', email: 'test@gmail.com' },
+  { name: 'TestName1', email: 'test@gmail.com' },
+  { name: 'TestEmail1', email: 'test@gmail.com', online: true },
   { name: 'TestName1', email: 'test@gmail.com' },
   { name: 'TestEmail1', email: 'test@gmail.com' },
   { name: 'TestName1', email: 'test@gmail.com' },
-  { name: 'TestEmail1', email: 'test@gmail.com' },
-  { name: 'TestName1', email: 'test@gmail.com' },
-  { name: 'TestEmail1', email: 'test@gmail.com' },
-  { name: 'TestName1', email: 'test@gmail.com' },
-  { name: 'TestEmail1', email: 'test@gmail.com' },
-  { name: 'TestName1', email: 'test@gmail.com' },
-  { name: 'TestEmail1', email: 'test@gmail.com' },
-  { name: 'TestName1', email: 'test@gmail.com' },
-  { name: 'TestEmail1', email: 'test@gmail.com' },
-  { name: 'TestName1', email: 'test@gmail.com' },
-  { name: 'TestEmail1', email: 'test@gmail.com' },
-  { name: 'TestName1', email: 'test@gmail.com' },
-  { name: 'TestEmail1', email: 'test@gmail.com' },
+  { name: 'TestEmail1', email: 'test@gmail.com', online: true },
 ])
 </script>
 
@@ -59,7 +59,7 @@ const data = ref([
                 <q-item-section avatar>
                   <q-avatar color="primary" text-color="white">
                     {{ item.name ? item.name[0].toUpperCase() : '' }}
-                    <q-badge floating style="border-radius: 50%" color="teal"></q-badge>
+                    <q-badge v-if="item.online" floating style="border-radius: 50%" color="teal"></q-badge>
                   </q-avatar>
                 </q-item-section>
                 <q-item-section>

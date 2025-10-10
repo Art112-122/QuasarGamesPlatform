@@ -17,19 +17,10 @@ function openInput() {
   })
 }
 
-function closeInput() {
-  showInput.value = false
-  message.value = ''
-  setTimeout(() => {
-    showAvatar.value = true
-  }, 400)
-}
-
 const user = ref({
-  name: 'Alex Johnson',
-  email: 'alex@example.com',
-  avatar: 'https://cdn.quasar.dev/img/avatar2.jpg',
-  status: 'online',
+  name: 'TestName1',
+  email: 'test@email.com',
+  online: true,
 })
 </script>
 
@@ -53,14 +44,14 @@ const user = ref({
               autofocus
               borderless
               placeholder="Напиши повідомлення..."
-              @blur="closeInput"
             />
           </transition>
             <q-avatar
+              style="margin-left: 15px; margin-right: 15px"
               v-show="showAvatar"
               icon="chat"
               text-color="white"
-              size="50px"
+              size="60px"
               class="cursor-pointer"
               @click="openInput"
             />
@@ -76,11 +67,11 @@ const user = ref({
         <div class="text-h6">{{ user.name }}</div>
         <div class="text-subtitle2 text-grey">{{ user.email }}</div>
         <q-badge
-          style="border-radius: 30px"
-          :color="user.status === 'online' ? 'teal' : 'grey'"
+          style="border-radius: 30px; padding: 4px"
+          :color="user.online === true ? 'teal' : 'grey'"
           class="q-mt-md"
         >
-          {{ user.status }}
+          <div v-if="user.online">online</div><div v-else>offline</div>
         </q-badge>
       </q-card>
     </div>
@@ -92,19 +83,23 @@ const user = ref({
 
 // чат
 .chat-input
-
+  display: flex
+  justify-content: center
+  align-items: center
   transition-property: opacity, width
-  transition-duration: 0.4s, 0.40s
-  border-radius: 5rem
-  padding: 0.5rem
-  background: linear-gradient(45deg, rgba(29, 29, 29, 0.21), rgba(29, 29, 29, 0.32)) !important
-  width: 60px
+  transition-duration: 0.4s, 0.4s
+  border-radius: 40px
+  padding: 13px
+  background: linear-gradient(45deg, rgba(29, 29, 29, 0.21), rgba(29, 29, 29, 0.32)  ) !important
+  width: 70px
   opacity: 1
 
 
 
 .chat-input.expanded
-  width: 100%
+  justify-content: flex-start
+
+  width: 80%
   opacity: 1
 
 
@@ -121,6 +116,7 @@ const user = ref({
   background: transparent
 
 
+
 .chat-input-box
   bottom: 20px
 
@@ -128,6 +124,15 @@ const user = ref({
 .chat-input-box .q-avatar
   cursor: pointer
   transition: transform 0.2s
+
+
+:deep(.q-input)
+  padding-left: 1rem
+  padding-right: 1rem
+  border-radius: 45px
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0))
+  color: white
+  box-shadow: none !important
 
 
 .q-avatar:hover
@@ -141,21 +146,17 @@ const user = ref({
   opacity: 0
 
 
-
-
-
 .q-message-container
   background: transparent !important
 
 :deep(.q-message-text--sent)
   background: linear-gradient(90deg, rgba(29, 29, 29, 0.21), rgba(29, 29, 29, 0.32)) !important
   backdrop-filter: blur(50px)
-  color: white !important
+
 
 :deep(.q-message-text--received)
   background: linear-gradient(90deg, rgba(29, 29, 29, 0.32), rgba(29, 29, 29, 0.21)) !important
   backdrop-filter: blur(50px)
-  color: white !important
 
 :deep(.q-message-text:before),
 :deep(.q-message-text:after)

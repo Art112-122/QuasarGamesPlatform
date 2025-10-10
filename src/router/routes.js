@@ -38,7 +38,7 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/ChatPage.vue') },
       {
-        path: '/:user',
+        path: '/:user/',
         component: () => import('pages/ChatPage.vue'),
       },
     ],
